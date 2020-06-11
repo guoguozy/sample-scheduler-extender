@@ -44,3 +44,16 @@ func prioritize(args schedulerapi.ExtenderArgs) *schedulerapi.HostPriorityList {
 	return &hostPriorityList
 }
 ```
+## 文件阐述
+- 重要文件是main.go以及/controller 下的predicates.go priorities.go routers.go
+  - main.go:
+	init函数以当前时间作种子获取随机数
+	main函数给httprouter设定了controller的Index,Filter,Prioritize函数，输出开始提示以及监听64000端口(防止端口冲突)
+  - predicates.go:
+	filter函数对该pod，遍历所有节点，使用podFitsOnNode来判断pod是否node，匹配的与不匹配的分开存储
+	podFitsOnNode函数对一个node和一个pod使用LuckyPredicate函数来判断是否匹配，匹配结果整理之后返回给filter
+	LuckyPredicate函数:匹配判断的核心逻辑，我设置为奇数节点必定选中，偶数节点根据随机数是否为偶数来决定是否选中
+  - priorities.go：
+	prioritize函数对选中的node进行0~10的随机，来作为对节点的打分
+  - routers.go:
+	Index,Filter,Prioritize函数作为接口函数，将过滤和打分结果处理后按照kubernetes需要的格式返回
