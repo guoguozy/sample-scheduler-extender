@@ -1,7 +1,7 @@
 # scheduler-extender
 kubernetes自定义scheduler-extender
 
-## 自定义extender工作逻辑
+## extender工作逻辑
 
 ### filter
 filter函数调用podFitsOnNode函数，来判断当前pod是否适合放在这个节点上。判断依据为，一个随机数对6求余数，这个余数是否等于2。如果等于2，则证明这个pod可以放在该节点上。
